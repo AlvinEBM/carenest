@@ -15,6 +15,7 @@ import { AuthController } from '../controllers/auth.controller';
 import { LoginDTO } from '../../application/dtos/login.dto';
 import { RegisterDTO } from '../../application/dtos/register.dto';
 import { authHandler } from '../../../../shared/middlewares/auth.handler'; 
+import { mensajesOrdenados } from '../../../../shared/validation/ordenar-errores';
 
 // Pequeño helper para login y register (no requieren JWT,
 // solo validación del DTO). Se hace un wrapper sin token.
@@ -41,7 +42,7 @@ const validateBody = (dtoClass: any) => {
         if (errors.length > 0) {
             const detalle = errors.map(e => ({
                 campo: e.property,
-                errores: Object.values(e.constraints || {}),
+                errores: mensajesOrdenados(e.constraints),
             }));
             return res.status(400).json({
                 ok: false,

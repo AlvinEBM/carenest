@@ -38,6 +38,7 @@ import { Sanciones } from '../pages/admin/Sanciones';
 import { Cancelaciones } from '../pages/admin/Cancelaciones';
 import { CancelacionMasiva } from '../pages/admin/CancelacionMasiva';
 import { CuentasAdmision } from '../pages/admin/CuentasAdmision';
+import { Pagos } from '../pages/admin/Pagos';
 import { CorreosNotificacion } from '../pages/admin/CorreosNotificacion';
 import { Reportes } from '../pages/admin/Reportes';
 
@@ -181,12 +182,21 @@ export const AppRouter = () => {
                             <CorreosNotificacion />
                         </ProtectedRoute>
                     }
+                    
                 />
                 <Route
                     path="/admin/reportes"
                     element={
                         <ProtectedRoute roles={['ADMIN']}>
                             <Reportes />
+                        </ProtectedRoute>
+                    }
+                />
+               <Route
+                    path="/admin/pagos"
+                    element={
+                        <ProtectedRoute roles={['ADMIN']}>
+                            <Pagos />
                         </ProtectedRoute>
                     }
                 />

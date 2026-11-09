@@ -220,6 +220,25 @@ export interface Dependiente {
 // ----- Pagos (Mercado Pago) -----
 export type EstadoPago = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO' | 'CANCELADO' | 'REEMBOLSADO';
 
+// Fila de la pantalla «Pagos» del administrador (GET /pagos)
+export interface PagoAdmin {
+    id_pago: number;
+    id_cita: number;
+    monto: number | string;
+    moneda: string;
+    estado: EstadoPago;
+    payment_id: string | null;
+    metodo: string | null;
+    detalle_estado: string | null;
+    fecha_creacion: string;
+    fecha_actualizacion: string;
+    paciente: string;
+    dni: string;
+    especialidad: string;
+    fecha: string;
+    hora: string;
+}
+
 export interface ResultadoVerificacion {
     ok: boolean;
     estado?: EstadoPago;

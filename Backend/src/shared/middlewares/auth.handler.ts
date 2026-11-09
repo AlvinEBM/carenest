@@ -23,6 +23,7 @@ import jwt from 'jsonwebtoken';
 import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import { obtenerJwtSecret } from '../config/jwt';
+import { mensajesOrdenados } from '../validation/ordenar-errores';
 
 // ----- Extender el tipo Request de Express para incluir jwt y dto -----
 declare global {
@@ -123,7 +124,7 @@ export const authHandler = (opts: AuthHandlerOptions = {}): RequestHandler => {
                 // Formatear errores legibles
                 const detalle = errors.map(e => ({
                     campo: e.property,
-                    errores: Object.values(e.constraints || {}),
+                    errores: mensajesOrdenados(e.constraints),
                 }));
 
                 return res.status(400).json({

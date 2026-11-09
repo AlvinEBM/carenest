@@ -21,11 +21,18 @@ export async function token(correo: string, contrasena = 'admin123'): Promise<st
 
 export const sql = (consulta: string, params: unknown[] = []) => AppDataSource.query(consulta, params);
 
-/** Próximo día laborable (lunes a sábado) a N días de hoy. */
+/// Avanza `dias` días LABORABLES (se saltan los domingos, que no se atiende).
+// Antes se sumaban días corridos y, si caía domingo, se movía al lunes:
+// así fechaLaborable(4) y fechaLaborable(5) podían dar el MISMO lunes
+// (por ejemplo, ejecutando un miércoles) y dos pruebas chocaban por el
+// mismo horario. Contando solo días laborables, cada valor da una fecha distinta.
 export function fechaLaborable(dias: number): string {
     const d = new Date();
-    d.setDate(d.getDate() + dias);
-    if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+    let avanzados = 0;
+    while (avanzados < dias) {
+        d.setDate(d.getDate() + 1);
+        if (d.getDay() !== 0) avanzados++;
+    }
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 

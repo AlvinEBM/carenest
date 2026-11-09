@@ -215,8 +215,9 @@ export const MisCitas = () => {
                 <Card className="p-4 mb-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
                         <div>
-                            <label className="block text-xs font-bold text-mute mb-1">Especialidad</label>
+                            <label htmlFor="filtro-especialidad" className="block text-xs font-bold text-mute mb-1">Especialidad</label>
                             <select
+                                id="filtro-especialidad"
                                 value={filtroEsp}
                                 onChange={(e) => setFiltroEsp(e.target.value)}
                                 className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-ink-soft bg-white focus:outline-none focus:border-sky-main"
@@ -228,8 +229,9 @@ export const MisCitas = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-mute mb-1">Desde</label>
+                            <label htmlFor="filtro-desde" className="block text-xs font-bold text-mute mb-1">Desde</label>
                             <input
+                                id="filtro-desde"
                                 type="date"
                                 value={fechaDesde}
                                 onChange={(e) => setFechaDesde(e.target.value)}
@@ -237,8 +239,9 @@ export const MisCitas = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-mute mb-1">Hasta</label>
+                            <label htmlFor="filtro-hasta" className="block text-xs font-bold text-mute mb-1">Hasta</label>
                             <input
+                                id="filtro-hasta"
                                 type="date"
                                 value={fechaHasta}
                                 onChange={(e) => setFechaHasta(e.target.value)}
@@ -286,9 +289,9 @@ export const MisCitas = () => {
                                     <div className="flex flex-wrap items-center gap-4">
                                         <div className="flex-1 min-w-[200px]">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-bold text-ink text-base">
+                                                <h2 className="font-bold text-ink text-base">
                                                     {cita.especialidad ?? 'Especialidad'}
-                                                </h3>
+                                                </h2>
                                                 <BadgeEstadoCita estado={cita.estado} />
                                                 {(esCancelable(cita.estado) || cita.estado_pago) && (
                                                     <BadgePago estado={cita.estado_pago} />
@@ -350,6 +353,11 @@ export const MisCitas = () => {
                                                 >
                                                     {verificandoId === cita.id_pago ? 'Verificando...' : '↻ Verificar pago'}
                                                 </Boton>
+                                            )}
+                                            {!pagosHabilitados && cita.estado_pago !== 'APROBADO' && (
+                                                <p role="note" className="text-xs font-semibold text-ink-soft bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 max-w-[260px]">
+                                                    El pago en línea no está disponible por ahora. Puedes pagar en caja el día de tu cita.
+                                                </p>
                                             )}
                                             {pagosHabilitados && cita.estado_pago !== 'APROBADO' && (
                                                 <Boton

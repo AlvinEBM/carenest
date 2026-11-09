@@ -101,7 +101,7 @@ export const Header = () => {
                         <button
                             onClick={() => setAbiertoBuzon(prev => !prev)}
                             className="relative w-10 h-10 rounded-full bg-smoke hover:bg-sky-soft flex items-center justify-center transition-colors"
-                            aria-label="Notificaciones"
+                            aria-label={noLeidas > 0 ? `Notificaciones: ${noLeidas > 9 ? '9+' : noLeidas} sin leer` : 'Notificaciones'}
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                                 <path d="M6 8a6 6 0 0 1 12 0v5l1.5 2.5h-15L6 13V8z"

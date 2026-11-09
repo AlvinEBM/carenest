@@ -10,6 +10,7 @@ const OPCIONES = [
     { to: '/admin/cancelacion',      icono: '✕',  label: 'Cancelación masiva' },
     { to: '/admin/cuentas-admision', icono: '👥', label: 'Cuentas Admisión' },
     { to: '/admin/correos',          icono: '📧', label: 'Correos' },
+    { to: '/admin/pagos',            icono: '💳', label: 'Pagos' },
     { to: '/admin/reportes',         icono: '📊', label: 'Reportes' },
 ];
 
