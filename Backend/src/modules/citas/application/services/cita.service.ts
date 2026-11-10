@@ -128,35 +128,18 @@ export class CitaService {
             return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
         }
 
-        // (8) Guardia final anti-carrera
-        // Si el horario ya existe pero quedó libre por una cancelación, se reutiliza (D-16).
-        const existente = await this.horarioRepo.findByMedicoFechaHora(data.id_medico, data.fecha, data.hora);
-        if (existente && !existente.disponible) {
-            return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
-        }
-        // (8.1) El usuario no puede tener OTRA cita a la misma fecha+hora (con otro médico)
+        // (8) El usuario no puede tener OTRA cita a la misma fecha+hora (con otro médico)
         const yaTieneCita = await this.citaRepo.usuarioYaTieneCitaEn(idUsuario, data.fecha, data.hora);
         if (yaTieneCita) {
             return { ok: false, mensaje: 'Ya tienes una cita reservada a esa misma hora' };
         }
-        
-        // (9) Crear el horario (ocupado) y la cita RESERVADA
-        let idHorario: number;
-        if (existente) {
-            const ocupado = await this.horarioRepo.ocuparSiDisponible(existente.id_horario);
-            if (!ocupado) {
-                return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
-            }
-            idHorario = existente.id_horario;
-        } else try {
-            idHorario = await this.horarioRepo.crearHorario(data.id_medico, data.fecha, data.hora);
-        } catch (err: any) {
-            // Choque de reservas simultáneas sobre el mismo slot (UNIQUE de la BD).
-            if (err?.esConflictoHorario) {
-                return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
-            }
-            throw err;
+
+        // (9) Ocupar el horario (nuevo o liberado por una cancelación) y crear la cita RESERVADA
+        const horario = await this.tomarHorario(data.id_medico, data.fecha, data.hora);
+        if ('mensaje' in horario) {
+            return { ok: false, mensaje: horario.mensaje };
         }
+        const idHorario = horario.idHorario;
 
         const nueva = CitaFactory.crearReserva(idUsuario, {
             id_horario: idHorario,
@@ -169,6 +152,28 @@ export class CitaService {
         const guardada = await this.citaRepo.save(nueva);
 
         return { ok: true, mensaje: '¡Felicidades, ya tienes tu cita reservada!', cita: guardada };
+    }
+
+    // Ocupa el horario del médico en esa fecha+hora:
+    //  - si nunca se reservó, lo crea ya ocupado;
+    //  - si existe pero quedó libre por una cancelación, lo vuelve a ocupar (D-16);
+    //  - si está ocupado (o dos pacientes lo piden a la vez), devuelve el conflicto.
+    private async tomarHorario(idMedico: number, fecha: string, hora: string):
+        Promise<{ ok: true; idHorario: number } | { ok: false; mensaje: string }> {
+        const OCUPADO = { ok: false as const, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
+
+        const existente = await this.horarioRepo.findByMedicoFechaHora(idMedico, fecha, hora);
+        if (existente) {
+            const ocupado = existente.disponible && await this.horarioRepo.ocuparSiDisponible(existente.id_horario);
+            return ocupado ? { ok: true, idHorario: existente.id_horario } : OCUPADO;
+        }
+        try {
+            return { ok: true, idHorario: await this.horarioRepo.crearHorario(idMedico, fecha, hora) };
+        } catch (err: any) {
+            // Choque de reservas simultáneas sobre el mismo slot (UNIQUE de la BD).
+            if (err?.esConflictoHorario) return OCUPADO;
+            throw err;
+        }
     }
 
     // Verifica si la cuenta está suspendida (misma regla dinámica que el login).
