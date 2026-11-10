@@ -12,12 +12,14 @@
 //   POST /citas/reservar               → solo PACIENTE  + valida DTO
 //   GET  /citas/mis-citas              → solo PACIENTE
 //   GET  /citas/contadores             → solo PACIENTE
+//   PUT  /citas/:id/reprogramar        → solo PACIENTE (su cita) + valida DTO
 // =================================================================
 import { Router } from 'express';
 
 import { CitaController } from '../controllers/cita.controller';
 import { authHandler } from '../../../../shared/middlewares/auth.handler';
 import { ReservarCitaDTO } from '../../application/dto/reservar-cita.dto';
+import { ReprogramarCitaDTO } from '../../application/dto/reprogramar-cita.dto';
 
 const router = Router();
 const controller = new CitaController();
@@ -88,4 +90,11 @@ router.put(
     controller.cancelar,
 );
 
-export default router;
+// PUT /citas/:id/reprogramar  (solo PACIENTE, su propia cita)
+router.put(
+    '/:id/reprogramar',
+    authHandler({ roles: ['PACIENTE'], dto: ReprogramarCitaDTO }),
+    controller.reprogramar,
+);
+
+export default router;

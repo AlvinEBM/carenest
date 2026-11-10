@@ -19,6 +19,8 @@ import { HorarioVirtualRepository } from '../../infrastructure/repositories/hora
 import { FamiliarRepository } from '../../../usuarios/infrastructure/repositories/familiar.repository';
 
 import { ReservarCitaDTO } from '../dto/reservar-cita.dto';
+import { ReprogramarCitaDTO } from '../dto/reprogramar-cita.dto';
+import { validarReprogramacion } from '../../domain/reglas-reprogramacion';
 import { CitaFactory } from '../../domain/factories/cita.factory';
 import { fechaEsReservable, esHoraPasada } from '../../domain/horario.config';
 
@@ -310,6 +312,65 @@ export class CitaService {
 
         return { ok: true, mensaje, id_cita: idCita, sancionada, cuentaBloqueada };
     }
+    // ============================================================
+    // Reprogramar una cita: misma cita y mismo médico, otra fecha/hora.
+    // ============================================================
+    async reprogramarCita(idUsuario: number, idCita: number, data: ReprogramarCitaDTO) {
+        const cita = await this.citaRepo.findById(idCita);
+        if (!cita) {
+            return { status: 404, ok: false, mensaje: 'La cita no existe' };
+        }
+        const actual = await this.citaRepo.obtenerFechaHoraDeCita(idCita);
+        const horarioActual = await this.horarioRepo.findById(cita.id_horario);
+        if (!actual || !horarioActual) {
+            return { status: 404, ok: false, mensaje: 'La cita no existe' };
+        }
+
+        // Reglas de negocio (dominio, desarrolladas con TDD)
+        const regla = validarReprogramacion({
+            estado: cita.estado as any,
+            idUsuarioCita: cita.id_usuario,
+            idUsuarioSesion: idUsuario,
+            fechaActual: actual.fecha,
+            horaActual: actual.hora,
+            fechaNueva: data.fecha,
+            horaNueva: data.hora,
+            ahora: new Date(),
+        });
+        if ('motivo' in regla) {
+            return { status: regla.codigo === 'PROHIBIDO' ? 403 : 400, ok: false, mensaje: regla.motivo };
+        }
+
+        const validez = fechaEsReservable(data.fecha);
+        if (!validez.ok) {
+            return { status: 400, ok: false, mensaje: validez.motivo };
+        }
+
+        const idMedico = horarioActual.id_medico;
+        const slotsRes = await this.horarioVirtualRepo.obtenerSlots(data.fecha, idMedico);
+        if (!slotsRes.ok) {
+            return { status: 409, ok: false, mensaje: slotsRes.motivo };
+        }
+        const slot = slotsRes.slots.find(s => s.hora === data.hora);
+        if (!slot) {
+            return { status: 409, ok: false, mensaje: 'La hora seleccionada no es un horario válido' };
+        }
+        if (!slot.disponible) {
+            return { status: 409, ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
+        }
+        if (await this.citaRepo.usuarioYaTieneCitaEn(idUsuario, data.fecha, data.hora)) {
+            return { status: 409, ok: false, mensaje: 'Ya tienes una cita reservada a esa misma hora' };
+        }
+
+        const horario = await this.tomarHorario(idMedico, data.fecha, data.hora);
+        if ('mensaje' in horario) {
+            return { status: 409, ok: false, mensaje: horario.mensaje };
+        }
+        await this.citaRepo.cambiarHorario(idCita, horario.idHorario, cita.id_horario);
+
+        return { status: 200, ok: true, mensaje: 'Tu cita fue reprogramada', id_cita: idCita };
+    }
+
     async listarMedicosDeEspecialidad(idEspecialidad: number) {
         const medicos = await this.horarioVirtualRepo.listarMedicosDeEspecialidad(idEspecialidad);
         return { ok: true, medicos };

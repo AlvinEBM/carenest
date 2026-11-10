@@ -46,5 +46,7 @@ export interface ICitaRepository {
     } | null>;
     desbloquearCuenta(idUsuario: number): Promise<void>;
     usuarioYaTieneCitaEn(idUsuario: number, fecha: string, hora: string): Promise<boolean>;
+    /** Mueve la cita a otro horario (ya ocupado) y libera el horario anterior. */
+    cambiarHorario(idCita: number, idHorarioNuevo: number, idHorarioAnterior: number): Promise<void>;
     crearNotificacion(idUsuario: number, mensaje: string, idCita?: number | null): Promise<void>;
-}
+}

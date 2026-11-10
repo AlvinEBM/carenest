@@ -270,6 +270,13 @@ export class CitaRepository implements ICitaRepository {
         );
     }
     // ¿El usuario YA tiene una cita activa a esa misma fecha y hora? (con cualquier médico)
+    async cambiarHorario(idCita: number, idHorarioNuevo: number, idHorarioAnterior: number): Promise<void> {
+        await AppDataSource.transaction(async (m) => {
+            await m.update(CitaModel, { id_cita: idCita }, { id_horario: idHorarioNuevo });
+            await m.update(HorarioModel, { id_horario: idHorarioAnterior }, { disponible: true });
+        });
+    }
+
     async usuarioYaTieneCitaEn(idUsuario: number, fecha: string, hora: string): Promise<boolean> {
         const total = await this.repo
             .createQueryBuilder('c')
@@ -293,4 +300,4 @@ export class CitaRepository implements ICitaRepository {
         } as any);
         await this.notifRepo.save(notif);
     }
-}
+}

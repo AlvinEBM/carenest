@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 
 import { CitaService } from '../../application/services/cita.service';
 import { ReservarCitaDTO } from '../../application/dto/reservar-cita.dto';
+import { ReprogramarCitaDTO } from '../../application/dto/reprogramar-cita.dto';
 
 export class CitaController {
     private service: CitaService;
@@ -97,6 +98,16 @@ export class CitaController {
         return res.status(200).json(result);
     };
     
+    // PUT /citas/:id/reprogramar
+    reprogramar = async (req: Request, res: Response) => {
+        const idCita = Number(req.params.id);
+        if (!idCita || isNaN(idCita)) {
+            return res.status(400).json({ ok: false, mensaje: 'ID de cita inválido' });
+        }
+        const { status, ...result } = await this.service.reprogramarCita(req.jwt!.id, idCita, req.dto as ReprogramarCitaDTO);
+        return res.status(status).json(result);
+    };
+
     listarMedicos = async (req: Request, res: Response) => {
         const idEspecialidad = Number(req.query.especialidad || 0);
         if (!idEspecialidad) {
@@ -105,4 +116,4 @@ export class CitaController {
         const result = await this.service.listarMedicosDeEspecialidad(idEspecialidad);
         return res.status(200).json(result);
     };
-}
+}
