@@ -1,0 +1,238 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-10T23:38:31.638Z",
+    "end": "2026-11-10T23:38:43.119Z",
+    "duration": 11481,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "9e807088-fe28-4046-a8be-fd177f10f0dd",
+      "title": "",
+      "fullFile": "D:\\2026\\calidad\\CareNest_Mejoras\\Pruebas_Herramientas\\selenium\\test\\carenest.e2e.test.js",
+      "file": "\\test\\carenest.e2e.test.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+          "title": "CareNest — prueba E2E del paciente con Selenium",
+          "fullFile": "D:\\2026\\calidad\\CareNest_Mejoras\\Pruebas_Herramientas\\selenium\\test\\carenest.e2e.test.js",
+          "file": "\\test\\carenest.e2e.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"CareNest — prueba E2E del paciente con Selenium\"",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium \"before all\" hook in \"CareNest — prueba E2E del paciente con Selenium\"",
+              "timedOut": false,
+              "duration": 2553,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const opciones = new chrome.Options().addArguments('--window-size=1366,900', '--lang=es-PE');\nif (process.env.HEADLESS) opciones.addArguments('--headless=new');\ndriver = await new Builder().forBrowser('chrome').setChromeOptions(opciones).build();",
+              "err": {},
+              "uuid": "7cf616fd-7c58-4ac3-87e1-b8f40e9e5ec7",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"CareNest — prueba E2E del paciente con Selenium\"",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium \"after all\" hook in \"CareNest — prueba E2E del paciente con Selenium\"",
+              "timedOut": false,
+              "duration": 38,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "76b2a28d-ed7a-4661-ad9e-db4322b2374d",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "SEL-01 Crear cuenta de paciente nuevo",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-01 Crear cuenta de paciente nuevo",
+              "timedOut": false,
+              "duration": 2928,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.get(`${URL}/registro`);\nawait escribir('Nombres', PACIENTE.nombres);\nawait escribir('Apellidos', PACIENTE.apellidos);\nawait escribir('DNI', PACIENTE.dni);\nawait escribir('Teléfono (celular)', PACIENTE.telefono);\nawait escribir('Correo electrónico', PACIENTE.correo);\nawait escribir('Contraseña', PACIENTE.contrasena);\nawait escribir('Confirmar contraseña', PACIENTE.contrasena);\nawait clic(boton('Crear cuenta →'));\nawait esperarTexto('¡Cuenta creada!');\nawait captura('SEL-01_cuenta_creada');\nawait driver.wait(until.urlContains('/login'), ESPERA);",
+              "err": {},
+              "uuid": "a153496f-ea4b-4a9d-af5d-c539724cd3a4",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "SEL-02 Login con contraseña incorrecta muestra un mensaje genérico",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-02 Login con contraseña incorrecta muestra un mensaje genérico",
+              "timedOut": false,
+              "duration": 529,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await iniciarSesion(PACIENTE.correo, 'Incorrecta2026');\nawait esperarTexto('Correo o contraseña incorrectos');\nawait captura('SEL-02_login_incorrecto');\nassert.ok((await driver.getCurrentUrl()).includes('/login'));",
+              "err": {},
+              "uuid": "9f409554-3509-4514-9cfd-c910251a1bed",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "SEL-03 Login correcto entra al panel del paciente",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-03 Login correcto entra al panel del paciente",
+              "timedOut": false,
+              "duration": 563,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await iniciarSesion(PACIENTE.correo, PACIENTE.contrasena);\nawait driver.wait(until.urlContains('/paciente'), ESPERA);\nawait captura('SEL-03_panel_paciente');",
+              "err": {},
+              "uuid": "40796289-03eb-4fca-8c5f-c222241a6a2a",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "SEL-04 Reservar una cita de Medicina General",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-04 Reservar una cita de Medicina General",
+              "timedOut": false,
+              "duration": 2548,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.get(`${URL}/paciente/reservar`);\nawait clic(By.xpath(`//button[contains(normalize-space(.), 'Medicina General')]`));\nawait clic(By.xpath(`//button[contains(normalize-space(.), 'Carlos Lopez')]`));\n// Día con cupo, a 2 días o más (para poder reprogramarlo después)\nconst hoy = new Date();\nconst minimo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 2);\nlet dia = null;\nfor (let intento = 0; intento < 2 && !dia; intento++) {\n    await driver.sleep(800);\n    const botones = await driver.findElements(By.xpath(`//button[contains(normalize-space(.), 'libres') and not(@disabled)]`));\n    for (const b of botones) {\n        const numero = Number((await b.getText()).trim().split(/\\s+/)[0]);\n        const mesOffset = intento; // 0 = mes actual, 1 = mes siguiente\n        const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + mesOffset, numero);\n        if (fecha >= minimo) { dia = b; fechaCita = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(numero).padStart(2, '0')}`; break; }\n    }\n    if (!dia) await clic(boton('›'));\n}\nassert.ok(dia, 'No se encontró un día con cupo');\nawait dia.click();\nawait clic(boton('Continuar →'));\n// Primera hora libre\nawait driver.sleep(1000);\nconst horas = await driver.findElements(By.xpath(`//button[contains(., ' AM') or contains(., ' PM')][not(@disabled)]`));\nassert.ok(horas.length > 0, 'No hay horas libres');\nawait horas[0].click();\nconst motivo = await driver.findElement(By.css('textarea'));\nawait motivo.sendKeys('Control general (prueba Selenium)');\nawait captura('SEL-04a_antes_de_confirmar');\nawait clic(boton('✓ Confirmar reserva'));\nawait esperarTexto('¡Cita reservada!');\nawait captura('SEL-04b_cita_reservada');",
+              "err": {},
+              "uuid": "8eb2e90f-0242-4c4b-bd81-cee570f3e811",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "SEL-05 Reprogramar la cita a otro día",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-05 Reprogramar la cita a otro día",
+              "timedOut": false,
+              "duration": 1973,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.get(`${URL}/paciente/mis-citas`);\nawait clic(boton('Reprogramar'));\nconst dialogo = await driver.wait(until.elementLocated(By.css('[role=dialog]')), ESPERA);\nconst inputFecha = await dialogo.findElement(By.css('input[type=date]'));\n// Busca el siguiente día con horas libres (salta domingos y días sin cupo)\nlet hora = null;\nfor (let d = 1; d <= 6 && !hora; d++) {\n    await ponerFecha(inputFecha, isoMas(fechaCita, d));\n    await driver.sleep(1200);\n    const horas = await dialogo.findElements(By.css('fieldset button'));\n    if (horas.length) hora = horas[0];\n}\nassert.ok(hora, 'No se encontró un día con horas libres para reprogramar');\nawait hora.click();\nawait captura('SEL-05a_ventana_reprogramar');\nawait clic(boton('Confirmar cambio'));\nawait esperarTexto('Cita reprogramada');\nawait captura('SEL-05b_cita_reprogramada');\nawait clic(boton('Entendido'));",
+              "err": {},
+              "uuid": "91e142b5-5e03-4226-9879-430fcac5f16e",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "SEL-06 Cancelar la cita",
+              "fullTitle": "CareNest — prueba E2E del paciente con Selenium SEL-06 Cancelar la cita",
+              "timedOut": false,
+              "duration": 343,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await clic(boton('Cancelar cita'));\nawait clic(boton('Sí, cancelar'));\nawait esperarTexto('Cita cancelada');\nawait captura('SEL-06_cita_cancelada');",
+              "err": {},
+              "uuid": "132321fd-c44f-426e-b15c-98419db9de02",
+              "parentUUID": "fe71e366-a486-4f04-a4e4-c7a1e57c1da3",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a153496f-ea4b-4a9d-af5d-c539724cd3a4",
+            "9f409554-3509-4514-9cfd-c910251a1bed",
+            "40796289-03eb-4fca-8c5f-c222241a6a2a",
+            "8eb2e90f-0242-4c4b-bd81-cee570f3e811",
+            "91e142b5-5e03-4226-9879-430fcac5f16e",
+            "132321fd-c44f-426e-b15c-98419db9de02"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 8884,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 60000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 60000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.8.2"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "reporte_selenium",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reporte",
+        "reportFilename": "reporte_selenium",
+        "reportTitle": "CareNest-Selenium",
+        "charts": "true"
+      },
+      "version": "6.3.2"
+    }
+  }
+}
