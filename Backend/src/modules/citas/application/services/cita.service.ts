@@ -129,8 +129,9 @@ export class CitaService {
         }
 
         // (8) Guardia final anti-carrera
+        // Si el horario ya existe pero quedó libre por una cancelación, se reutiliza (D-16).
         const existente = await this.horarioRepo.findByMedicoFechaHora(data.id_medico, data.fecha, data.hora);
-        if (existente) {
+        if (existente && !existente.disponible) {
             return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
         }
         // (8.1) El usuario no puede tener OTRA cita a la misma fecha+hora (con otro médico)
@@ -141,7 +142,13 @@ export class CitaService {
         
         // (9) Crear el horario (ocupado) y la cita RESERVADA
         let idHorario: number;
-        try {
+        if (existente) {
+            const ocupado = await this.horarioRepo.ocuparSiDisponible(existente.id_horario);
+            if (!ocupado) {
+                return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
+            }
+            idHorario = existente.id_horario;
+        } else try {
             idHorario = await this.horarioRepo.crearHorario(data.id_medico, data.fecha, data.hora);
         } catch (err: any) {
             // Choque de reservas simultáneas sobre el mismo slot (UNIQUE de la BD).
@@ -302,4 +309,4 @@ export class CitaService {
         const medicos = await this.horarioVirtualRepo.listarMedicosDeEspecialidad(idEspecialidad);
         return { ok: true, medicos };
     }
-}
+}

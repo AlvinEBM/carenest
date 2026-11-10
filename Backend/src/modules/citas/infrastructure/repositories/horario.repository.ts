@@ -64,6 +64,17 @@ export class HorarioRepository implements IHorarioRepository {
         );
     }
 
+    // Ocupa un horario que quedó libre por una cancelación.
+    // El WHERE incluye disponible = true: si dos pacientes lo intentan
+    // a la vez, solo uno lo consigue (affected = 1).
+    async ocuparSiDisponible(id: number): Promise<boolean> {
+        const r = await this.repo.update(
+            { id_horario: id, disponible: true },
+            { disponible: false },
+        );
+        return (r.affected ?? 0) === 1;
+    }
+
     // ============================================================
     // NUEVO (Enfoque A1): obtener el médico de una especialidad
     // ============================================================
@@ -126,4 +137,4 @@ export class HorarioRepository implements IHorarioRepository {
             throw err;
         }
     }
-}
+}

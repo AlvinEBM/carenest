@@ -144,7 +144,7 @@ CREATE TABLE `citas` (
   `estado`         enum('RESERVADA','CONFIRMADA','RECORDATORIO','COMPLETADA','CANCELADA','FALTA') NOT NULL DEFAULT 'RESERVADA',
   `fecha_registro` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id_cita`),
-  UNIQUE KEY `uk_citas_horario` (`id_horario`),
+  KEY `idx_citas_horario` (`id_horario`),  -- sin UNIQUE: un horario cancelado se puede volver a reservar (D-16)
   KEY `idx_citas_usuario` (`id_usuario`),
   KEY `idx_citas_dependiente` (`id_dependiente`),
   CONSTRAINT `fk_citas_usuario` FOREIGN KEY (`id_usuario`)

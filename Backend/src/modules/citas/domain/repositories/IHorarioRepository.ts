@@ -23,4 +23,7 @@ export interface IHorarioRepository {
     } | null>;
 
     crearHorario(idMedico: number, fecha: string, hora: string): Promise<number>;
-}
+
+    /** Vuelve a ocupar un horario liberado. Devuelve false si otro paciente lo tomó antes. */
+    ocuparSiDisponible(id: number): Promise<boolean>;
+}
