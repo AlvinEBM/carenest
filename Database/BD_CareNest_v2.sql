@@ -16,12 +16,12 @@
 -- migracion_v2_medicos_pagos.sql
 -- =================================================================
 SET NAMES utf8mb4;
-DROP DATABASE IF EXISTS calidadcitasmedicassangenaro;
-CREATE DATABASE calidadcitasmedicassangenaro
+DROP DATABASE IF EXISTS citasmedicassangenaro;
+CREATE DATABASE citasmedicassangenaro
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
 
-USE calidadcitasmedicassangenaro;
+USE citasmedicassangenaro;
 
 -- =================================================================
 -- 1) USUARIOS  (PACIENTE, ADMIN, ADMISION, MEDICO, FAMILIAR)
@@ -318,7 +318,7 @@ INSERT INTO `medicos` (nombres, apellidos, id_especialidad, id_usuario, colegiat
 ('Lucia',  'Ramirez',   3, (SELECT id_usuario FROM usuarios WHERE correo = 'lucia.ramirez@carenest.pe'),  '012345'),
 ('Rosa',   'Fernandez', 4, (SELECT id_usuario FROM usuarios WHERE correo = 'rosa.fernandez@carenest.pe'), '023456'),
 ('Pedro',  'Sanchez',   5, (SELECT id_usuario FROM usuarios WHERE correo = 'pedro.sanchez@carenest.pe'),  '034567');
-000000
+
 INSERT INTO `configuracion_sistema` (clave, valor, descripcion) VALUES
 ('limite_inasistencias',          '3',  'Número máximo de inasistencias antes del bloqueo automático'),
 ('dias_suspension',               '15', 'Días de suspensión al superar el límite de inasistencias'),
@@ -338,12 +338,3 @@ INSERT INTO `configuracion_sistema` (clave, valor, descripcion) VALUES
 --   rosa.fernandez@carenest.pe   → MEDICO (Obstetricia)
 --   pedro.sanchez@carenest.pe    → MEDICO (Enfermería)
 -- =================================================================
-
-USE citasmedicassangenaro;
-SET SQL_SAFE_UPDATES = 0;
-UPDATE usuarios
-SET contrasena = '$2b$10$.TAwn4G3R.fzAZachB9bqux7uL/h310urEuJngYs.pIzqLTQnLNMe'
-WHERE correo IN ('admin@carenest.pe', 'admision@carenest.pe', 'juan@gmail.com',
-                 'carlos.lopez@carenest.pe', 'maria.gonzales@carenest.pe', 'lucia.ramirez@carenest.pe',
-                 'rosa.fernandez@carenest.pe', 'pedro.sanchez@carenest.pe');
-SET SQL_SAFE_UPDATES = 1;
