@@ -117,27 +117,9 @@ export class CitaService {
             return { ok: false, mensaje: 'El médico seleccionado no pertenece a esa especialidad o no está disponible' };
         }
 
-        // (7) La fecha+hora debe ser un SLOT real, en fecha habilitada y libre.
-        const slotsRes = await this.horarioVirtualRepo.obtenerSlots(data.fecha, data.id_medico);
-        if (!slotsRes.ok) {
-            return { ok: false, mensaje: slotsRes.motivo };
-        }
-        const slot = slotsRes.slots.find(s => s.hora === data.hora);
-        if (!slot) {
-            return { ok: false, mensaje: 'La hora seleccionada no es un horario válido' };
-        }
-        if (!slot.disponible) {
-            return { ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
-        }
-
-        // (8) El usuario no puede tener OTRA cita a la misma fecha+hora (con otro médico)
-        const yaTieneCita = await this.citaRepo.usuarioYaTieneCitaEn(idUsuario, data.fecha, data.hora);
-        if (yaTieneCita) {
-            return { ok: false, mensaje: 'Ya tienes una cita reservada a esa misma hora' };
-        }
-
-        // (9) Ocupar el horario (nuevo o liberado por una cancelación) y crear la cita RESERVADA
-        const horario = await this.tomarHorario(data.id_medico, data.fecha, data.hora);
+        // (7) La fecha+hora debe ser un horario real y libre; el paciente no debe
+        //     tener otra cita a esa hora. Si todo está bien, se ocupa el horario.
+        const horario = await this.ocuparHorario(idUsuario, data.id_medico, data.fecha, data.hora);
         if ('mensaje' in horario) {
             return { ok: false, mensaje: horario.mensaje };
         }
@@ -156,13 +138,28 @@ export class CitaService {
         return { ok: true, mensaje: '¡Felicidades, ya tienes tu cita reservada!', cita: guardada };
     }
 
-    // Ocupa el horario del médico en esa fecha+hora:
-    //  - si nunca se reservó, lo crea ya ocupado;
-    //  - si existe pero quedó libre por una cancelación, lo vuelve a ocupar (D-16);
-    //  - si está ocupado (o dos pacientes lo piden a la vez), devuelve el conflicto.
-    private async tomarHorario(idMedico: number, fecha: string, hora: string):
+    // ============================================================
+    // Ocupa el horario de un médico en una fecha+hora. Lo usan
+    // reservarCita y reprogramarCita (antes cada uno repetía estos pasos).
+    //  1. Debe ser un horario real de la agenda y estar libre.
+    //  2. El paciente no puede tener otra cita a esa misma hora.
+    //  3. Si el horario nunca se reservó, se crea ya ocupado; si quedó
+    //     libre por una cancelación, se vuelve a ocupar (D-16).
+    //  4. Si dos pacientes lo piden a la vez, solo uno lo obtiene.
+    // ============================================================
+    private async ocuparHorario(idUsuario: number, idMedico: number, fecha: string, hora: string):
         Promise<{ ok: true; idHorario: number } | { ok: false; mensaje: string }> {
         const OCUPADO = { ok: false as const, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
+
+        const slots = await this.horarioVirtualRepo.obtenerSlots(fecha, idMedico);
+        if (!slots.ok) return { ok: false, mensaje: slots.motivo ?? 'No hay atención en esa fecha' };
+        const slot = slots.slots.find(s => s.hora === hora);
+        if (!slot) return { ok: false, mensaje: 'La hora seleccionada no es un horario válido' };
+        if (!slot.disponible) return OCUPADO;
+
+        if (await this.citaRepo.usuarioYaTieneCitaEn(idUsuario, fecha, hora)) {
+            return { ok: false, mensaje: 'Ya tienes una cita reservada a esa misma hora' };
+        }
 
         const existente = await this.horarioRepo.findByMedicoFechaHora(idMedico, fecha, hora);
         if (existente) {
@@ -346,23 +343,8 @@ export class CitaService {
             return { status: 400, ok: false, mensaje: validez.motivo };
         }
 
-        const idMedico = horarioActual.id_medico;
-        const slotsRes = await this.horarioVirtualRepo.obtenerSlots(data.fecha, idMedico);
-        if (!slotsRes.ok) {
-            return { status: 409, ok: false, mensaje: slotsRes.motivo };
-        }
-        const slot = slotsRes.slots.find(s => s.hora === data.hora);
-        if (!slot) {
-            return { status: 409, ok: false, mensaje: 'La hora seleccionada no es un horario válido' };
-        }
-        if (!slot.disponible) {
-            return { status: 409, ok: false, mensaje: 'Ese horario ya fue reservado, selecciona otro.' };
-        }
-        if (await this.citaRepo.usuarioYaTieneCitaEn(idUsuario, data.fecha, data.hora)) {
-            return { status: 409, ok: false, mensaje: 'Ya tienes una cita reservada a esa misma hora' };
-        }
-
-        const horario = await this.tomarHorario(idMedico, data.fecha, data.hora);
+        // Mismo médico, nuevo horario (mismas validaciones que al reservar)
+        const horario = await this.ocuparHorario(idUsuario, horarioActual.id_medico, data.fecha, data.hora);
         if ('mensaje' in horario) {
             return { status: 409, ok: false, mensaje: horario.mensaje };
         }
