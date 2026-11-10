@@ -74,6 +74,7 @@ export interface Cita {
 export interface CitaConDetalles extends Cita {
     fecha?: string;
     hora?: string;
+    id_medico?: number;
     especialidad?: string;
     medico_nombres?: string;
     medico_apellidos?: string;

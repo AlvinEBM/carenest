@@ -62,6 +62,12 @@ export const citasApi = {
         return response.data;
     },
 
+    // Reprogramar una cita del paciente (mismo médico, otra fecha/hora)
+    reprogramar: async (idCita: number, fecha: string, hora: string): Promise<{ ok: boolean; mensaje: string }> => {
+        const response = await apiClient.put(`/citas/${idCita}/reprogramar`, { fecha, hora });
+        return response.data;
+    },
+
     misCitas: async (): Promise<CitaConDetalles[]> => {
         const response = await apiClient.get('/citas/mis-citas');
         return response.data.citas ?? response.data ?? [];
@@ -105,4 +111,4 @@ export const citasApi = {
             id_dependiente: response.data.id_familiar,
         };
     },
-};
+};

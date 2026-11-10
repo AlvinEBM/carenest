@@ -16,6 +16,7 @@ import { BadgeEstadoCita, BadgePago } from '../../components/common/Badge';
 import axios from 'axios';
 
 import { citasApi } from '../../api/citasApi';
+import { ReprogramarCita } from './ReprogramarCita';
 import { pagosApi } from '../../api/pagosApi';
 import { CitaConDetalles, EstadoCita } from '../../types';
 import { formatearFecha, formatearHora, diasDesdeHoy } from '../../utils/formatters';
@@ -45,6 +46,7 @@ export const MisCitas = () => {
 
     // Modales
     const [citaAConfirmar, setCitaAConfirmar] = useState<number | null>(null);
+    const [citaAReprogramar, setCitaAReprogramar] = useState<CitaConDetalles | null>(null);
     const [resultado, setResultado] = useState<{ mensaje: string; bloqueada: boolean; sancionada: boolean } | null>(null);
 
     // Pagos
@@ -370,6 +372,13 @@ export const MisCitas = () => {
                                                 </Boton>
                                             )}
                                             <Boton
+                                                variante="secondary"
+                                                tamano="sm"
+                                                onClick={() => setCitaAReprogramar(cita)}
+                                            >
+                                                Reprogramar
+                                            </Boton>
+                                            <Boton
                                                 variante="danger"
                                                 tamano="sm"
                                                 disabled={cancelandoId === cita.id_cita}
@@ -410,6 +419,17 @@ export const MisCitas = () => {
                     </>
                 )}
             </main>
+
+            {/* VENTANA PARA REPROGRAMAR */}
+            <ReprogramarCita
+                cita={citaAReprogramar}
+                onCerrar={() => setCitaAReprogramar(null)}
+                onReprogramada={async (mensaje) => {
+                    setCitaAReprogramar(null);
+                    await cargar();
+                    setAvisoPago({ tipo: 'ok', titulo: 'Cita reprogramada', mensaje: `${mensaje}. Revisa la nueva fecha y hora en tu lista.` });
+                }}
+            />
 
             {/* MODAL DE CONFIRMACIÓN */}
             {citaAConfirmar !== null && (
@@ -487,4 +507,4 @@ export const MisCitas = () => {
             )}
         </div>
     );
-};
+};
