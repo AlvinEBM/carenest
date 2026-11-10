@@ -1,0 +1,14 @@
+{
+  "name": "carenest-selenium",
+  "version": "1.0.0",
+  "description": "Prueba automatizada de interfaz (E2E) de CareNest con Selenium WebDriver",
+  "private": true,
+  "scripts": {
+    "test": "mocha test --timeout 60000 --reporter mochawesome --reporter-options reportDir=reporte,reportFilename=reporte_selenium,reportTitle=CareNest-Selenium,charts=true"
+  },
+  "devDependencies": {
+    "mocha": "10.8.2",
+    "mochawesome": "7.1.3",
+    "selenium-webdriver": "4.27.0"
+  }
+}

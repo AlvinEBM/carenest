@@ -1,0 +1,1001 @@
+{
+  "info": {
+    "name": "CareNest – Pruebas de API",
+    "description": "Pruebas de la API de CareNest (Calidad y Pruebas de Software, UPN). Ejecutar en orden con el Collection Runner o con Newman. Requiere el backend en http://localhost:3002.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "PM-01 Registrar paciente nuevo",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Fechas de prueba: días laborables (sin domingos) a 3 y 4 días de hoy",
+                  "function laborable(dias) {",
+                  "    const d = new Date();",
+                  "    let n = 0;",
+                  "    while (n < dias) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0) n++; }",
+                  "    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');",
+                  "}",
+                  "pm.collectionVariables.set('fecha', laborable(3));",
+                  "pm.collectionVariables.set('fechaNueva', laborable(4));",
+                  "// Paciente nuevo en cada ejecución (DNI, teléfono y correo únicos)",
+                  "const n = String(Date.now()).slice(-7);",
+                  "pm.collectionVariables.set('dni', '7' + n);",
+                  "pm.collectionVariables.set('telefono', '98' + n);",
+                  "pm.collectionVariables.set('correo', 'postman.' + n + '@gmail.com');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-01 · Responde 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('PM-01 · Devuelve ok = true', () => pm.expect(pm.response.json().ok).to.eql(true));",
+                  "pm.test('PM-01 · Responde en menos de 2 s', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Crea un paciente nuevo con datos únicos generados en el pre-request.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Rosa\",\n  \"apellidos\": \"Postman Prueba\",\n  \"dni\": \"{{dni}}\",\n  \"telefono\": \"{{telefono}}\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"Postman2026\",\n  \"genero\": \"Femenino\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-02 Registro con teléfono inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-02 · Responde 400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('PM-02 · Indica el error en el campo telefono', () => {",
+                  "    const campos = pm.response.json().detalle.map(d => d.campo);",
+                  "    pm.expect(campos).to.include('telefono');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Rosa\",\n  \"apellidos\": \"Postman Prueba\",\n  \"dni\": \"70000777\",\n  \"telefono\": \"812345678\",\n  \"correo\": \"otra.postman@gmail.com\",\n  \"contrasena\": \"Postman2026\",\n  \"genero\": \"Femenino\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-03 Iniciar sesión (paciente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-03 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const datos = pm.response.json();",
+                  "pm.test('PM-03 · Devuelve un token JWT', () => {",
+                  "    pm.expect(datos.token).to.be.a('string');",
+                  "    pm.expect(datos.token.split('.')).to.have.lengthOf(3);",
+                  "});",
+                  "pm.test('PM-03 · El rol es PACIENTE', () => pm.expect(JSON.stringify(datos)).to.include('PACIENTE'));",
+                  "pm.collectionVariables.set('tokenPaciente', datos.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"Postman2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-04 Iniciar sesión con contraseña incorrecta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-04 · Responde 401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('PM-04 · No devuelve token', () => pm.expect(pm.response.json().token).to.be.undefined);",
+                  "pm.test('PM-04 · El mensaje no dice qué dato falló', () => {",
+                  "    const m = pm.response.json().mensaje.toLowerCase();",
+                  "    pm.expect(m).to.not.include('no existe');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"Incorrecta2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Especialidades y horarios",
+      "item": [
+        {
+          "name": "PM-05 Listar especialidades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-05 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const esp = pm.response.json().especialidades;",
+                  "pm.test('PM-05 · Hay al menos una especialidad', () => pm.expect(esp.length).to.be.above(0));",
+                  "const mg = esp.find(e => e.nombre === 'Medicina General');",
+                  "pm.test('PM-05 · Existe Medicina General', () => pm.expect(mg).to.not.be.undefined);",
+                  "pm.collectionVariables.set('idEspecialidad', mg.id_especialidad);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/especialidades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "especialidades"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PM-06 Listar médicos de la especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-06 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const medicos = pm.response.json().medicos;",
+                  "pm.test('PM-06 · Hay al menos un médico', () => pm.expect(medicos.length).to.be.above(0));",
+                  "pm.collectionVariables.set('idMedico', medicos[0].id_medico);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/medicos?especialidad={{idEspecialidad}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "medicos"
+              ],
+              "query": [
+                {
+                  "key": "especialidad",
+                  "value": "{{idEspecialidad}}"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PM-07 Consultar horarios del día",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-07 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const libres = pm.response.json().horarios.filter(h => h.disponible);",
+                  "pm.test('PM-07 · Hay horarios libres', () => pm.expect(libres.length).to.be.above(1));",
+                  "pm.test('PM-07 · Las horas tienen formato HH:MM:SS', () => libres.forEach(h => pm.expect(h.hora).to.match(/^\\d{2}:\\d{2}:\\d{2}$/)));",
+                  "pm.collectionVariables.set('hora', libres[0].hora);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/horarios?fecha={{fecha}}&medico={{idMedico}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "horarios"
+              ],
+              "query": [
+                {
+                  "key": "fecha",
+                  "value": "{{fecha}}"
+                },
+                {
+                  "key": "medico",
+                  "value": "{{idMedico}}"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Citas: reservar, reprogramar y cancelar",
+      "item": [
+        {
+          "name": "PM-08 Reservar cita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-08 · Responde 201 Created', () => pm.response.to.have.status(201));",
+                  "const cita = pm.response.json().cita;",
+                  "pm.test('PM-08 · La cita queda RESERVADA', () => pm.expect(cita.estado).to.eql('RESERVADA'));",
+                  "pm.collectionVariables.set('idCita', cita.id_cita);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/reservar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "reservar"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"{{fecha}}\",\n  \"hora\": \"{{hora}}\",\n  \"id_especialidad\": \"{{idEspecialidad}}\",\n  \"id_medico\": \"{{idMedico}}\",\n  \"motivo\": \"Control general desde Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-09 Reservar otra vez el mismo horario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-09 · Responde 409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('PM-09 · Explica que el horario no está libre', () => pm.expect(pm.response.json().mensaje).to.match(/reservad/));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/reservar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "reservar"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"{{fecha}}\",\n  \"hora\": \"{{hora}}\",\n  \"id_especialidad\": \"{{idEspecialidad}}\",\n  \"id_medico\": \"{{idMedico}}\",\n  \"motivo\": \"Intento duplicado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-10 Ver mis citas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-10 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const mia = pm.response.json().citas.find(c => c.id_cita === pm.collectionVariables.get('idCita') * 1);",
+                  "pm.test('PM-10 · La cita reservada aparece en la lista', () => pm.expect(mia).to.not.be.undefined);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/mis-citas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "mis-citas"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PM-11 Horarios del nuevo día",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-11 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "const libres = pm.response.json().horarios.filter(h => h.disponible);",
+                  "pm.collectionVariables.set('horaNueva', libres[libres.length - 1].hora);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/horarios?fecha={{fechaNueva}}&medico={{idMedico}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "horarios"
+              ],
+              "query": [
+                {
+                  "key": "fecha",
+                  "value": "{{fechaNueva}}"
+                },
+                {
+                  "key": "medico",
+                  "value": "{{idMedico}}"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PM-12 Reprogramar la cita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-12 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('PM-12 · Mensaje «Tu cita fue reprogramada»', () => pm.expect(pm.response.json().mensaje).to.eql('Tu cita fue reprogramada'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/{{idCita}}/reprogramar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "{{idCita}}",
+                "reprogramar"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"{{fechaNueva}}\",\n  \"hora\": \"{{horaNueva}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-13 Reprogramar con hora mal escrita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-13 · Responde 400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('PM-13 · El error está en el campo hora', () => pm.expect(pm.response.json().detalle.map(d => d.campo)).to.eql(['hora']));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/{{idCita}}/reprogramar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "{{idCita}}",
+                "reprogramar"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"{{fechaNueva}}\",\n  \"hora\": \"10am\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-14 Cancelar la cita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-14 · Responde 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('PM-14 · Devuelve ok = true', () => pm.expect(pm.response.json().ok).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/{{idCita}}/cancelar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "{{idCita}}",
+                "cancelar"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Seguridad (OWASP)",
+      "item": [
+        {
+          "name": "PM-15 Ruta protegida sin token (A01)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-15 · Responde 401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/mis-citas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "mis-citas"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "PM-16 Paciente intenta ver todos los pagos (A01)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-16 · Responde 403 Forbidden', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pagos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pagos"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PM-17 Inyección SQL en el login (A03)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-17 · No permite el ingreso (400 o 401)', () => pm.expect(pm.response.code).to.be.oneOf([400, 401]));",
+                  "pm.test('PM-17 · No devuelve token', () => pm.expect(pm.response.json().token).to.be.undefined);",
+                  "pm.test('PM-17 · No muestra errores de la base de datos', () => pm.expect(pm.response.text().toLowerCase()).to.not.match(/sql|syntax|er_/));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"' OR '1'='1\",\n  \"contrasena\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PM-18 Cabeceras de seguridad (A05)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('PM-18 · X-Content-Type-Options: nosniff', () => pm.response.to.have.header('X-Content-Type-Options', 'nosniff'));",
+                  "pm.test('PM-18 · Tiene Content-Security-Policy', () => pm.response.to.have.header('Content-Security-Policy'));",
+                  "pm.test('PM-18 · No revela la tecnología (sin X-Powered-By)', () => pm.response.to.not.have.header('X-Powered-By'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/citas/especialidades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "citas",
+                "especialidades"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenPaciente}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "tokenPaciente",
+      "value": ""
+    },
+    {
+      "key": "fecha",
+      "value": ""
+    },
+    {
+      "key": "fechaNueva",
+      "value": ""
+    },
+    {
+      "key": "dni",
+      "value": ""
+    },
+    {
+      "key": "telefono",
+      "value": ""
+    },
+    {
+      "key": "correo",
+      "value": ""
+    },
+    {
+      "key": "idEspecialidad",
+      "value": ""
+    },
+    {
+      "key": "idMedico",
+      "value": ""
+    },
+    {
+      "key": "hora",
+      "value": ""
+    },
+    {
+      "key": "horaNueva",
+      "value": ""
+    },
+    {
+      "key": "idCita",
+      "value": ""
+    }
+  ]
+}
