@@ -10,7 +10,7 @@
 // =================================================================
 import cron from 'node-cron';
 
-import { DisponibilidadService } from '../../modules/administracion/application/services/disponibilidad.service';
+import { DisponibilidadService } from '../modules/administracion/application/services/disponibilidad.service';
 
 const service = new DisponibilidadService();
 

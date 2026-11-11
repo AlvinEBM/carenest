@@ -10,13 +10,10 @@
 //  R4. No se puede atender una cita de una fecha futura.
 //  R5. El médico solo atiende SUS citas (control de acceso, OWASP A01).
 // =================================================================
-export type EstadoCita =
-    | 'RESERVADA'
-    | 'CONFIRMADA'
-    | 'RECORDATORIO'
-    | 'COMPLETADA'
-    | 'CANCELADA'
-    | 'FALTA';
+import { EstadoCita } from '../../citas/domain/estado-cita';
+
+// Se vuelve a exportar para no cambiar a quienes ya lo importaban desde aquí
+export type { EstadoCita };
 
 export const ESTADOS_ATENDIBLES: EstadoCita[] = [
     'RESERVADA',

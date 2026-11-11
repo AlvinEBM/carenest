@@ -8,7 +8,7 @@
 // =================================================================
 import cron from 'node-cron';
 
-import { NotificacionService } from '../../modules/notificaciones/application/services/notificacion.service';
+import { NotificacionService } from '../modules/notificaciones/application/services/notificacion.service';
 
 const service = new NotificacionService();
 

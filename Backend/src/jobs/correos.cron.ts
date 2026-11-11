@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { MailerService } from '../../modules/notificaciones/application/services/mailer.service';
+import { MailerService } from '../modules/notificaciones/application/services/mailer.service';
 
 const mailer = new MailerService();
 

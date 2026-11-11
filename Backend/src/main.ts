@@ -13,9 +13,9 @@ import { AppDataSource } from './config/datasource';
 import { obtenerJwtSecret } from './shared/config/jwt';
 
 // Cron jobs
-import { iniciarCronRecordatorios } from './shared/cron/recordatorios.cron';
-import { iniciarCronDisponibilidad } from './shared/cron/disponibilidad.cron';
-import { iniciarCronCorreos } from './shared/cron/correos.cron';
+import { iniciarCronRecordatorios } from './jobs/recordatorios.cron';
+import { iniciarCronDisponibilidad } from './jobs/disponibilidad.cron';
+import { iniciarCronCorreos } from './jobs/correos.cron';
 
 // Falla rápido si falta el secreto JWT (no arrancar inseguro)
 obtenerJwtSecret();

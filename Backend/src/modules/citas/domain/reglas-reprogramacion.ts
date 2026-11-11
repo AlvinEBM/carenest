@@ -12,7 +12,7 @@
 //  R5. La nueva fecha/hora debe estar a más de 2 horas
 //      (misma anticipación mínima que al reservar).
 // =================================================================
-import { EstadoCita } from '../../medicos/domain/reglas-atencion';
+import { EstadoCita } from './estado-cita';
 
 export const ESTADOS_REPROGRAMABLES: EstadoCita[] = ['RESERVADA', 'CONFIRMADA', 'RECORDATORIO'];
 export const HORAS_MINIMAS_CITA_ACTUAL = 24;
