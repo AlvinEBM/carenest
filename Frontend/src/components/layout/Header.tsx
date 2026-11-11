@@ -63,7 +63,7 @@ export const Header = () => {
                             <path d="M12 7v4M10 9h4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
-                    <span className="text-sm font-extrabold text-blue-deep leading-tight">Felizmente</span>
+                    <span className="flex flex-col leading-tight"><span className="text-sm font-extrabold text-blue-deep">CareNest</span><span className="text-[10px] font-semibold text-mute tracking-wider">POLICLÍNICO</span></span>
                 </div>
 
                 {/* Nav central */}

@@ -64,8 +64,8 @@ export const Login = () => {
 
                 {/* Marca */}
                 <div className="text-center mb-2">
-                    <h1 className="text-2xl font-extrabold text-blue-deep leading-tight">Centro Psicológico<br/>Felizmente</h1>
-                    <p className="text-xs text-mute mt-2">Tu bienestar, nuestra prioridad</p>
+                    <h1 className="text-2xl font-extrabold text-blue-deep leading-tight">Policlínico<br/>CareNest</h1>
+                    <p className="text-xs text-mute mt-2">Tu salud, nuestra prioridad</p>
                 </div>
 
                 <div className="h-px bg-gray-100 my-6" />
@@ -150,7 +150,7 @@ export const Login = () => {
             </div>
 
             <p className="absolute bottom-6 text-xs text-mute z-10">
-                © 2026 Centro Psicológico Felizmente
+                © 2026 Policlínico CareNest
             </p>
         </div>
     );

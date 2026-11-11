@@ -75,7 +75,7 @@ export const CuentasAdmision = () => {
                         <Card className="p-6">
                             <h2 className="text-lg font-bold text-blue-deep mb-4">Nueva cuenta</h2>
                             <form onSubmit={crear} className="space-y-3">
-                                <Input label="Correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="admision2@felizmente.pe" required />
+                                <Input label="Correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="admision2@carenest.pe" required />
                                 <Input label="Contraseña" type="password" value={contrasena} onChange={(e) => setContrasena(e.target.value)} placeholder="Mínimo 6 caracteres" required />
                                 <div className="grid grid-cols-2 gap-3">
                                     <Input label="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} required />

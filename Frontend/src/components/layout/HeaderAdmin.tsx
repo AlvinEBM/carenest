@@ -34,7 +34,7 @@ export const HeaderAdmin = () => {
                             <path d="M12 7v4M10 9h4" stroke="#1E3A8A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
-                    <span className="text-sm font-extrabold text-white leading-tight">Felizmente</span>
+                    <span className="text-sm font-extrabold text-white leading-tight">CareNest</span>
                     <span className="px-3 py-1 bg-sky-main rounded-full text-[10px] font-bold text-white tracking-wider">
                         {badge}
                     </span>

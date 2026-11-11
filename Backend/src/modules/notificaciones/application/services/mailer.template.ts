@@ -12,16 +12,16 @@ const GRIS_TEXTO   = '#333333';
 const GRIS_SUAVE   = '#777777';
 
 export function asuntoCorreo(tipo: string): string {
-    if (tipo === 'CANCELACION') return 'Cancelación de tu cita - Centro Psicológico Felizmente';
-    if (tipo === 'RECORDATORIO') return 'Recordatorio de tu cita - Centro Psicológico Felizmente';
-    return 'Notificación - Centro Psicológico Felizmente';
+    if (tipo === 'CANCELACION') return 'Cancelación de tu cita - Policlínico CareNest';
+    if (tipo === 'RECORDATORIO') return 'Recordatorio de tu cita - Policlínico CareNest';
+    return 'Notificación - Policlínico CareNest';
 }
 
 export function construirCorreoHTML(nombrePaciente: string, mensaje: string): string {
     const saludo = nombrePaciente ? `Hola ${nombrePaciente},` : 'Hola,';
 
     const logoHtml = LOGO_URL
-        ? `<img src="${LOGO_URL}" alt="Felizmente" width="48" style="display:block;border:0;" />`
+        ? `<img src="${LOGO_URL}" alt="CareNest" width="48" style="display:block;border:0;" />`
         : '';
 
     return `

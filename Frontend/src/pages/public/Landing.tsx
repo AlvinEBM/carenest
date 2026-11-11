@@ -1,11 +1,11 @@
 // =================================================================
-// Landing page pública de "Centro Psicológico Felizmente".
-// Ruta: "/". Presenta el centro y dirige a login o registro.
+// Landing page pública del "Policlínico CareNest".
+// Ruta: "/". Presenta el policlínico y dirige a login o registro.
 // =================================================================
 import { Link } from 'react-router-dom';
 
 // ----- Logo -----
-const LogoFelizmente = ({ size = 40 }: { size?: number }) => (
+const LogoCareNest = ({ size = 40 }: { size?: number }) => (
     <div className="rounded-2xl bg-sky-main flex items-center justify-center shadow-cta" style={{ width: size, height: size }}>
         <svg viewBox="0 0 24 24" width={size * 0.6} height={size * 0.6} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 11l9-8 9 8" />
@@ -15,13 +15,10 @@ const LogoFelizmente = ({ size = 40 }: { size?: number }) => (
     </div>
 );
 
-const Estrella = () => (
-    <svg viewBox="0 0 20 20" width="15" height="15" fill="#F59E0B"><path d="M10 1l2.6 5.3 5.9.9-4.2 4.1 1 5.9L10 14.4 4.7 17.2l1-5.9L1.5 7.2l5.9-.9z" /></svg>
-);
 
 // ----- Ilustración cálida de bienestar (escena de terapia/calma) -----
 const IlustracionBienestar = () => (
-    <svg viewBox="0 0 520 420" className="w-full h-auto max-w-lg" role="img" aria-label="Ilustración de bienestar emocional">
+    <svg viewBox="0 0 520 420" className="w-full h-auto max-w-lg" role="img" aria-label="Ilustración de atención en salud">
         {/* Blob de fondo */}
         <path d="M120 60C200 20 340 20 410 90c60 60 70 160 20 230-50 70-190 90-290 60C60 350 10 250 30 170 45 120 70 85 120 60z" fill="#E0F2FE" />
         <path d="M150 90C215 60 320 65 375 120c50 50 55 135 15 195-45 65-160 75-245 45C25 330 40 235 65 180 90 130 105 110 150 90z" fill="#F0F9FF" opacity="0.7" />
@@ -77,15 +74,15 @@ export const Landing = () => {
             <header className="w-full">
                 <div className="max-w-[1400px] mx-auto px-8 py-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <LogoFelizmente size={48} />
-                        <span className="text-2xl font-extrabold text-blue-deep">Felizmente</span>
+                        <LogoCareNest size={48} />
+                        <span className="flex flex-col leading-none"><span className="text-2xl font-extrabold text-blue-deep">CareNest</span><span className="text-xs font-bold text-mute tracking-wider">POLICLÍNICO</span></span>
                     </div>
                     <div className="flex items-center gap-3">
                         <Link to="/login" className="px-6 py-3 rounded-xl border border-slate-200 bg-white text-ink-soft font-bold text-sm hover:border-sky-main hover:text-sky-deep transition">
                             Iniciar Sesión
                         </Link>
                         <Link to="/registro" className="px-6 py-3 rounded-xl bg-sky-main text-white font-bold text-sm shadow-cta hover:bg-sky-deep transition">
-                            Empieza Tu Camino
+                            Crear Cuenta
                         </Link>
                     </div>
                 </div>
@@ -100,68 +97,60 @@ export const Landing = () => {
                             <IlustracionBienestar />
                         </div>
                         <h1 className="text-5xl md:text-6xl font-extrabold text-ink leading-[1.05]">
-                            Prioriza tu Bienestar.<br />
-                            <span className="text-sky-deep">Transforma tu Vida.</span>
+                            Tu salud y la de tu familia.<br />
+                            <span className="text-sky-deep">Tu cita, en minutos.</span>
                         </h1>
                         <p className="mt-7 text-xl text-mute leading-relaxed max-w-xl">
-                            Terapia psicológica personalizada y accesible desde la{' '}
-                            <span className="font-bold text-ink-soft">comodidad de tu hogar</span>. Conecta con profesionales
-                            cualificados en un entorno seguro y privado.
+                            Reserva, reprograma y paga tus citas de Medicina General, Pediatría, Obstetricia, Psicología y Enfermería{' '}
+                            <span className="font-bold text-ink-soft">desde tu celular</span>, sin hacer cola en ventanilla.
                         </p>
                         <Link to="/registro" className="mt-9 inline-flex items-center justify-center w-full sm:w-auto px-12 py-5 rounded-2xl bg-sky-main text-white font-extrabold text-lg shadow-cta hover:bg-sky-deep transition">
-                            Empieza Tu Primera Sesión
+                            Reservar mi Primera Cita
                         </Link>
                     </div>
 
                     {/* Columna derecha: tarjeta de bienvenida */}
                     <div className="flex justify-center lg:justify-end">
                         <div className="w-full max-w-md bg-white rounded-3xl shadow-card p-12 flex flex-col items-center text-center">
-                            <LogoFelizmente size={72} />
-                            <h2 className="mt-6 text-3xl font-extrabold text-blue-deep">Felizmente</h2>
-                            <p className="text-mute">Tu bienestar, nuestra prioridad</p>
+                            <LogoCareNest size={72} />
+                            <h2 className="mt-6 text-3xl font-extrabold text-blue-deep">CareNest</h2>
+                            <p className="text-mute">Policlínico · Tu salud, nuestra prioridad</p>
                             <div className="w-full border-t border-slate-100 my-8" />
                             <h3 className="text-2xl font-extrabold text-ink">Bienvenido</h3>
-                            <p className="mt-2 text-mute">Da el primer paso hacia tu bienestar emocional.</p>
+                            <p className="mt-2 text-mute">Crea tu cuenta y reserva tu cita en pocos pasos.</p>
                             <Link to="/registro" className="mt-7 w-full px-6 py-4 rounded-xl bg-sky-main text-white font-bold text-lg shadow-cta hover:bg-sky-deep transition">
                                 Crear cuenta gratis
                             </Link>
                             <Link to="/login" className="mt-3 w-full px-6 py-4 rounded-xl border border-slate-200 text-ink-soft font-bold hover:border-sky-main hover:text-sky-deep transition">
                                 Ya tengo cuenta
                             </Link>
-                            <p className="mt-7 text-xs text-mute-soft">Al continuar aceptas nuestro compromiso de confidencialidad y cuidado.</p>
+                            <p className="mt-7 text-xs text-mute-soft">Tus datos de salud se tratan de forma confidencial.</p>
                         </div>
                     </div>
                 </div>
 
                 {/* ===================== FEATURES (ancho completo) ===================== */}
                 <div className="mt-24 grid md:grid-cols-3 gap-8">
-                    <FeatureCard titulo="Seguridad y Privacidad" texto="Tus datos y tus sesiones protegidos en un entorno completamente confidencial." icon={<path d="M12 2l7 4v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z" />} />
-                    <FeatureCard titulo="Especialistas Cualificados" texto="Psicólogos colegiados con amplia experiencia en distintas áreas del bienestar." icon={<><circle cx="12" cy="8" r="5" /><path d="M9 13l-1 8 4-2 4 2-1-8" /></>} />
-                    <FeatureCard titulo="Sesiones Flexibles" texto="Agenda tus sesiones en el día y horario que mejor se adapte a tu rutina." icon={<><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18M8 2v4M16 2v4" /></>} />
-                </div>
-
-                {/* ===================== TESTIMONIOS ===================== */}
-                <div className="mt-10 grid md:grid-cols-3 gap-8">
-                    <Testimonio texto="Increíble experiencia, me sentí escuchada desde el primer día." autor="María S." />
-                    <Testimonio texto="Un espacio seguro y cálido que me ayudó muchísimo a mejorar." autor="Carlos R." />
-                    <Testimonio texto="Profesionales excelentes y una plataforma muy fácil de usar." autor="Lucía P." />
+                    <FeatureCard titulo="Seguridad y Privacidad" texto="Tus datos y tu historial clínico protegidos: solo los ven los médicos que te atienden." icon={<path d="M12 2l7 4v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z" />} />
+                    <FeatureCard titulo="Cinco Especialidades" texto="Medicina General, Pediatría, Obstetricia, Psicología y Enfermería en un solo lugar." icon={<><circle cx="12" cy="8" r="5" /><path d="M9 13l-1 8 4-2 4 2-1-8" /></>} />
+                    <FeatureCard titulo="Horarios Flexibles" texto="Elige el día y la hora; si surge un imprevisto, reprograma o cancela tu cita." icon={<><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18M8 2v4M16 2v4" /></>} />
                 </div>
             </main>
 
             {/* ===================== FRANJA CTA (centrada) ===================== */}
             <section className="max-w-[1400px] mx-auto px-8 pb-20">
                 <div className="bg-gradient-to-r from-sky-main to-sky-deep rounded-3xl px-8 py-14 flex flex-col items-center text-center gap-6 shadow-cta">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-white">Toma el Primer Paso Hoy</h2>
-                    <p className="text-sky-soft text-lg max-w-2xl">Tu bienestar emocional merece atención. Empieza tu camino con nosotros de forma gratuita.</p>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-white">Agenda tu Cita Hoy</h2>
+                    <p className="text-sky-soft text-lg max-w-2xl">Atención para toda la familia: gestantes, niños y adultos. Crear tu cuenta es gratis.</p>
                     <Link to="/registro" className="px-10 py-4 rounded-xl bg-white text-sky-deep font-extrabold text-lg hover:bg-sky-soft transition">
-                        Regístrate Gratuitamente
+                        Crear mi Cuenta
                     </Link>
                 </div>
             </section>
 
             {/* ===================== FOOTER ===================== */}
             <footer className="border-t border-slate-100 py-8 text-center">
-                <p className="text-sm text-mute">© 2026 Felizmente · Centro Psicológico</p>
+                <p className="text-sm text-mute">© 2026 CareNest · Policlínico</p>
             </footer>
         </div>
     );
@@ -177,13 +166,5 @@ const FeatureCard = ({ titulo, texto, icon }: { titulo: string; texto: string; i
         </div>
         <h4 className="font-extrabold text-ink text-lg">{titulo}</h4>
         <p className="mt-2 text-mute leading-relaxed">{texto}</p>
-    </div>
-);
-
-const Testimonio = ({ texto, autor }: { texto: string; autor: string }) => (
-    <div className="bg-white rounded-2xl shadow-card p-6">
-        <div className="flex gap-1 mb-3"><Estrella /><Estrella /><Estrella /><Estrella /><Estrella /></div>
-        <p className="text-ink-soft leading-relaxed">"{texto}"</p>
-        <p className="mt-3 text-sm text-mute font-bold">— {autor}</p>
     </div>
 );

@@ -182,7 +182,7 @@ export const CorreosNotificacion = () => {
                             <form onSubmit={guardar} className="space-y-3">
                                 <Input label="Correo remitente" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="notificaciones@gmail.com" required />
                                 <Input label={editando ? 'Contraseña de aplicación (dejar vacío para mantener)' : 'Contraseña de aplicación'} type="password" value={appPassword} onChange={(e) => setAppPassword(e.target.value)} placeholder="xxxx xxxx xxxx xxxx" required={!editando} />
-                                <Input label="Nombre visible en el correo (opcional)" value={nombreRemitente} onChange={(e) => setNombreRemitente(e.target.value)} placeholder="Centro Psicológico Felizmente" />
+                                <Input label="Nombre visible en el correo (opcional)" value={nombreRemitente} onChange={(e) => setNombreRemitente(e.target.value)} placeholder="Policlínico CareNest" />
                                 <div className="grid grid-cols-2 gap-3">
                                     <Input label="Host SMTP (vacío = Gmail)" value={host} onChange={(e) => setHost(e.target.value)} placeholder="smtp.gmail.com" />
                                     <Input label="Puerto (vacío = 587)" value={puerto} onChange={(e) => setPuerto(e.target.value.replace(/\D/g, ''))} placeholder="587" />

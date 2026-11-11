@@ -696,7 +696,7 @@ const ExitoReserva = ({ especialidad, fecha, hora }: { especialidad: string; fec
             </svg>
         </div>
         <h2 className="text-3xl font-extrabold text-blue-deep mb-2">¡Cita reservada!</h2>
-        <p className="text-sm text-mute mb-6">Te esperamos en el Centro Psicológico Felizmente</p>
+        <p className="text-sm text-mute mb-6">Te esperamos en el Policlínico CareNest</p>
         <div className="inline-block bg-sky-soft rounded-2xl px-6 py-4 mb-6">
             <p className="text-lg font-bold text-sky-deep">{especialidad}</p>
             <p className="text-sm text-ink-soft mt-1">{formatearFecha(fecha)} · {formatearHora(hora)}</p>
