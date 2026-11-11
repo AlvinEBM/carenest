@@ -4,7 +4,9 @@
 // =================================================================
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3002';
+// El backend está en el mismo equipo que sirve el frontend, puerto 3002.
+// Así funciona en la PC (localhost) y en el celular (IP de la PC en la red Wi-Fi).
+const API_URL = `http://${window.location.hostname}:3002`;
 
 export const apiClient = axios.create({
     baseURL: API_URL,
