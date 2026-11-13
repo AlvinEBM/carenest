@@ -327,7 +327,7 @@ const PasoEspecialidad = ({ especialidades, cargando, seleccionada, onSelecciona
                                 ${activa ? 'border-sky-main bg-sky-soft shadow-cta' : 'border-gray-200 hover:border-sky-main hover:bg-sky-soft'}`}>
                             <div className="w-10 h-10 rounded-lg bg-sky-soft flex items-center justify-center mb-3"><span className="text-xl">🏥</span></div>
                             <h3 className="font-bold text-ink text-sm mb-1">{e.nombre}</h3>
-                            {e.descripcion && <p className="text-xs text-mute line-clamp-2">{e.descripcion}</p>}
+                            {e.descripcion && <p className="text-xs text-slate-600 line-clamp-2">{e.descripcion}</p>}
                             {!!e.precio && <p className="text-xs font-bold text-sky-deep mt-2">Consulta: {formatearSoles(e.precio)}</p>}
                         </button>
                     );

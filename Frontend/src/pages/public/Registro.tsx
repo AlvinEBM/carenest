@@ -135,7 +135,7 @@ export const Registro = () => {
     // ===== Pantalla de éxito =====
     if (exito) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
+            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
                 <div className="bg-white rounded-3xl shadow-card p-12 max-w-md text-center">
                     <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-success flex items-center justify-center">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
@@ -144,10 +144,10 @@ export const Registro = () => {
                                   strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-extrabold text-blue-deep mb-2">¡Cuenta creada!</h2>
+                    <h1 className="text-2xl font-extrabold text-blue-deep mb-2">¡Cuenta creada!</h1>
                     <p className="text-sm text-mute">Te estamos redirigiendo al login...</p>
                 </div>
-            </div>
+            </main>
         );
     }
 
@@ -155,7 +155,7 @@ export const Registro = () => {
 
     // ===== Formulario =====
     return (
-        <div className="min-h-screen flex items-center justify-center py-10 bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
+        <main className="min-h-screen flex items-center justify-center py-10 bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
             <div className="w-full max-w-2xl bg-white rounded-3xl shadow-card p-10">
                 {/* Header */}
                 <div className="text-center mb-6">
@@ -171,7 +171,7 @@ export const Registro = () => {
                 <form onSubmit={handleSubmit} noValidate className="space-y-4">
                     {/* Datos personales */}
                     <div>
-                        <h3 className="text-xs font-bold text-sky-deep uppercase tracking-widest mb-3">Datos personales</h3>
+                        <h2 className="text-xs font-bold text-sky-deep uppercase tracking-widest mb-3">Datos personales</h2>
                         <div className="grid grid-cols-2 gap-3">
                             <Input
                                 label="Nombres"
@@ -259,7 +259,7 @@ export const Registro = () => {
 
                     {/* Credenciales */}
                     <div>
-                        <h3 className="text-xs font-bold text-sky-deep uppercase tracking-widest mb-3">Credenciales de acceso</h3>
+                        <h2 className="text-xs font-bold text-sky-deep uppercase tracking-widest mb-3">Credenciales de acceso</h2>
                         <div className="space-y-3">
                             <Input
                                 label="Correo electrónico"
@@ -358,6 +358,6 @@ export const Registro = () => {
                     </p>
                 </div>
             </div>
-        </div>
+        </main>
     );
 };

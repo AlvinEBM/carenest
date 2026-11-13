@@ -16,7 +16,7 @@ export const Badge = ({ children, variante = 'sky', conPunto = false }: BadgePro
         success: 'bg-success-soft text-success-deep',
         danger:  'bg-danger-soft text-danger',
         warning: 'bg-warning-soft text-warning',
-        gray:    'bg-gray-100 text-mute',
+        gray:    'bg-gray-100 text-gray-700',   // antes text-mute: 4.3:1 sobre gris (WCAG 1.4.3)
     };
 
     const puntoColor = {

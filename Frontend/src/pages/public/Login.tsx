@@ -45,7 +45,7 @@ export const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
+        <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-sky-soft via-blue-50 to-smoke">
             <div className="absolute top-20 left-20 w-72 h-72 rounded-full bg-sky-main opacity-[0.05] blur-3xl" />
             <div className="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-blue-deep opacity-[0.04] blur-3xl" />
             <div className="absolute top-1/2 left-10 w-40 h-40 rounded-full bg-sky-main opacity-[0.06] blur-2xl" />
@@ -152,6 +152,6 @@ export const Login = () => {
             <p className="absolute bottom-6 text-xs text-mute z-10">
                 © 2026 Policlínico CareNest
             </p>
-        </div>
+        </main>
     );
 };
