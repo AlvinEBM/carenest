@@ -5,11 +5,14 @@
 // =================================================================
 import { AuthProvider } from './auth/AuthContext';
 import { AppRouter } from './routes/AppRouter';
+import { TamanoTexto } from './components/common/TamanoTexto';
 
 function App() {
     return (
         <AuthProvider>
             <AppRouter />
+            {/* Accesibilidad: botón «Aa» para agrandar el texto en todas las pantallas */}
+            <TamanoTexto />
         </AuthProvider>
     );
 }

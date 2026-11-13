@@ -39,3 +39,11 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+/* Accesibilidad (WCAG 1.4.4): las etiquetas pequeñas escritas en px
+   también crecen con el botón «Aa», que cambia el tamaño base en rem. */
+html .text-\[10px\] { font-size: 0.625rem; }
+html .text-\[11px\] { font-size: 0.6875rem; }
+
+/* Espacio al final de la página para que el botón «Aa» no tape el último contenido */
+body { padding-bottom: 72px; }
