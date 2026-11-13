@@ -15,6 +15,7 @@ import { Card } from '../../components/common/Card';
 import { citasApi } from '../../api/citasApi';
 import { Especialidad, Horario, DiaCalendario, MedicoReserva, Dependiente } from '../../types';
 import { formatearFecha, formatearHora, obtenerIniciales } from '../../utils/formatters';
+import { BotonLeer } from '../../components/common/BotonLeer';
 import { formatearSoles } from '../../utils/fechas';
 import { filtrarLetras, validarNombre } from '../../utils/validaciones';
 
@@ -664,7 +665,13 @@ const PasoHorario = ({
                         className="w-full px-4 py-3 text-sm bg-white rounded-lg border border-gray-200 focus:border-sky-main outline-none resize-none" />
                 </div>
                 <div className="bg-sky-soft rounded-lg p-4">
-                    <p className="text-xs font-bold text-sky-deep mb-2">RESUMEN DE TU CITA</p>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                        <p className="text-xs font-bold text-sky-deep">RESUMEN DE TU CITA</p>
+                        <BotonLeer
+                            descripcion="resumen de tu cita"
+                            texto={`Resumen de tu cita. Especialidad: ${especialidad.nombre}. Médico: doctor ${medico.nombres} ${medico.apellidos}. Fecha: ${formatearFecha(fecha)}. Hora: ${formatearHora(horaSel.hora)}.${motivo ? ` Motivo: ${motivo}.` : ''} Si todo está bien, pulsa Confirmar reserva.`}
+                        />
+                    </div>
                     <ul className="text-sm text-ink-soft space-y-1">
                         <li>📋 <strong>Especialidad:</strong> {especialidad.nombre}</li>
                         <li>👨‍⚕️ <strong>Médico:</strong> Dr. {medico.nombres} {medico.apellidos}</li>

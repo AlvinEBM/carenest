@@ -13,6 +13,7 @@ import { Header } from '../../components/layout/Header';
 import { Card } from '../../components/common/Card';
 import { Boton } from '../../components/common/Boton';
 import { BadgeEstadoCita, BadgePago } from '../../components/common/Badge';
+import { BotonLeer } from '../../components/common/BotonLeer';
 import axios from 'axios';
 
 import { citasApi } from '../../api/citasApi';
@@ -298,6 +299,9 @@ export const MisCitas = () => {
                                                 {(esCancelable(cita.estado) || cita.estado_pago) && (
                                                     <BadgePago estado={cita.estado_pago} />
                                                 )}
+                                                <span className="ml-auto">
+                                                    <BotonLeer texto={textoCitaParaVoz(cita)} descripcion={`cita de ${cita.especialidad ?? ''}`} />
+                                                </span>
                                             </div>
                                             {cita.medico_nombres && (
                                                 <p className="text-sm text-mute">
@@ -507,4 +511,25 @@ export const MisCitas = () => {
             )}
         </div>
     );
-};
+};
+
+// ---- Texto que se lee en voz alta para una cita (accesibilidad, ODS 10)
+const ESTADO_VOZ: Record<string, string> = {
+    RESERVADA: 'reservada', CONFIRMADA: 'confirmada', RECORDATORIO: 'con recordatorio enviado',
+    COMPLETADA: 'completada', FALTA: 'marcada como falta', CANCELADA: 'cancelada',
+};
+const PAGO_VOZ: Record<string, string> = {
+    APROBADO: 'pagada', PENDIENTE: 'con pago pendiente', RECHAZADO: 'con pago rechazado',
+    CANCELADO: 'sin pagar', REEMBOLSADO: 'reembolsada',
+};
+const textoCitaParaVoz = (c: CitaConDetalles): string => {
+    const partes = [
+        `Cita de ${c.especialidad ?? 'consulta'}.`,
+        c.medico_nombres ? `Con el doctor ${c.medico_nombres} ${c.medico_apellidos ?? ''}.` : '',
+        c.es_para_menor && c.dependiente_nombres ? `Paciente: ${c.dependiente_nombres} ${c.dependiente_apellidos ?? ''}.` : '',
+        c.fecha ? `El ${formatearFecha(c.fecha)}, a las ${formatearHora(c.hora ?? '')}.` : '',
+        `Estado: ${ESTADO_VOZ[c.estado] ?? c.estado.toLowerCase()}, ${c.estado_pago ? (PAGO_VOZ[c.estado_pago] ?? 'sin pagar') : 'sin pagar'}.`,
+        c.motivo ? `Motivo: ${c.motivo}.` : '',
+    ];
+    return partes.filter(Boolean).join(' ');
+};

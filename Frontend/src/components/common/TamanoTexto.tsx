@@ -5,8 +5,10 @@
 // texto y los espacios crecen juntos y la página se reacomoda sin
 // cortar contenido. La elección se recuerda en este navegador.
 // El propio control usa medidas en px para no crecer ni tapar contenido.
+// El mismo panel tiene «Leer esta página en voz alta» (Web Speech API).
 // =================================================================
 import { useEffect, useRef, useState } from 'react';
+import { detenerVoz, leerEnVoz, textoDeLaPagina, vozDisponible } from '../../utils/lectorVoz';
 
 const NIVELES = [
     { id: 'normal',  etiqueta: 'A',    nombre: 'Normal',         porcentaje: 100 },
@@ -30,6 +32,7 @@ const leerGuardado = (): Nivel => {
 export const TamanoTexto = () => {
     const [nivel, setNivel]     = useState<Nivel>(leerGuardado);
     const [abierto, setAbierto] = useState(false);
+    const [leyendo, setLeyendo] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
     const botonRef = useRef<HTMLButtonElement>(null);
 
@@ -56,6 +59,14 @@ export const TamanoTexto = () => {
 
     const actual = NIVELES.find(x => x.id === nivel) ?? NIVELES[0];
 
+    const leerPagina = () => {
+        if (leyendo) { detenerVoz(); setLeyendo(false); return; }
+        const texto = textoDeLaPagina();
+        if (!texto) return;
+        setLeyendo(true);
+        leerEnVoz(texto, () => setLeyendo(false));
+    };
+
     return (
         <div className="fixed z-50 print:hidden" style={{ left: 16, bottom: 16 }}>
             {abierto && (
@@ -63,7 +74,7 @@ export const TamanoTexto = () => {
                     ref={panelRef}
                     id="panel-tamano-texto"
                     role="group"
-                    aria-label="Tamaño del texto"
+                    aria-label="Opciones de accesibilidad"
                     className="rounded-xl bg-white shadow-xl border border-gray-200"
                     style={{ width: 296, padding: 16, marginBottom: 8 }}
                 >
@@ -87,6 +98,22 @@ export const TamanoTexto = () => {
                     <p className="text-slate-600" style={{ fontSize: 12, marginTop: 12, lineHeight: 1.4 }}>
                         Actual: <b>{actual.nombre} ({actual.porcentaje} %)</b>. Se recuerda en este navegador.
                     </p>
+                    {vozDisponible() && (
+                        <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #E5E7EB' }}>
+                            <p className="font-bold text-ink" style={{ fontSize: 14, marginBottom: 8 }}>Leer en voz alta</p>
+                            <button
+                                type="button"
+                                onClick={leerPagina}
+                                aria-pressed={leyendo}
+                                className={`w-full rounded-lg border-2 font-bold transition
+                                    ${leyendo ? 'border-blue-deep bg-blue-deep text-white' : 'border-gray-200 text-ink hover:border-sky-main'}`}
+                                style={{ fontSize: 14, height: 44 }}
+                            >
+                                <span aria-hidden="true">{leyendo ? '■ ' : '🔊 '}</span>
+                                {leyendo ? 'Detener la lectura' : 'Leer esta página'}
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
             <button
@@ -95,8 +122,8 @@ export const TamanoTexto = () => {
                 onClick={() => setAbierto(a => !a)}
                 aria-expanded={abierto}
                 aria-controls="panel-tamano-texto"
-                aria-label="Cambiar el tamaño del texto"
-                title="Cambiar el tamaño del texto"
+                aria-label="Accesibilidad: tamaño del texto y lectura en voz alta"
+                title="Accesibilidad: tamaño del texto y lectura en voz alta"
                 className="flex items-center justify-center rounded-full bg-blue-deep text-white shadow-lg font-extrabold hover:bg-sky-deep focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-bright"
                 style={{ width: 48, height: 48, fontSize: 18 }}
             >
