@@ -9,9 +9,9 @@ export default {
             colors: {
                 // Celeste (color principal)
                 'sky-soft':   '#E0F2FE',
-                'sky-main':   '#0EA5E9',
+                'sky-main':   '#0277B6',   // antes #0EA5E9 (2.8:1 con blanco); ahora 4.9:1, WCAG 1.4.3
                 'sky-deep':   '#0369A1',
-                'sky-bright': '#38BDF8',
+                'sky-bright': '#026AA7',   // hover: antes #38BDF8 (2.1:1)
 
                 // Azul (acento para títulos/header)
                 'blue-deep':  '#1E3A8A',
@@ -27,13 +27,13 @@ export default {
                 'mute-soft':  '#94A3B8',
 
                 // Estados
-                'success':       '#10B981',
+                'success':       '#047857',   // antes #10B981 (2.5:1); ahora 5.5:1
                 'success-soft':  '#DCFCE7',
                 'success-deep':  '#15803D',
-                'danger':        '#EF4444',
+                'danger':        '#DC2626',   // antes #EF4444 (3.8:1); ahora 4.8:1
                 'danger-soft':   '#FEF2F2',
                 'danger-border': '#FECACA',
-                'warning':       '#F59E0B',
+                'warning':       '#B45309',   // antes #F59E0B (2.1:1); ahora 5.0:1
                 'warning-soft':  '#FFFBEB',
             },
             fontFamily: {

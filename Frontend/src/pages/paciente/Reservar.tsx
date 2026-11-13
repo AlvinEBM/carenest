@@ -471,12 +471,17 @@ const PasoCalendario = ({ medico, fechaSel, onFecha, onAtras, onContinuar }: {
                         }
                         return (
                             <button key={i} onClick={() => !sinCupo && onFecha(celda.fecha)} disabled={sinCupo}
+                                aria-pressed={seleccionada}
+                                aria-label={`${dia}: ${sinCupo ? 'sin cupo' : `${celda.libres} horarios libres`}${seleccionada ? ', seleccionado' : ''}`}
                                 className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-all
-                                    ${seleccionada ? 'bg-sky-main text-white font-bold shadow-cta' : ''}
+                                    ${seleccionada ? 'bg-sky-main text-white font-bold shadow-cta ring-4 ring-offset-2 ring-blue-deep' : ''}
                                     ${!seleccionada && !sinCupo ? 'bg-sky-soft text-sky-deep font-semibold hover:bg-sky-bright hover:text-white' : ''}
                                     ${sinCupo ? 'bg-gray-100 text-gray-400 cursor-not-allowed line-through' : ''}`}>
                                 {dia}
-                                {!seleccionada && !sinCupo && <span className="text-[8px] mt-0.5">{celda.libres} libres</span>}
+                                {/* WCAG 1.4.1: el estado no se indica solo con color */}
+                                {seleccionada && <span aria-hidden="true" className="text-xs mt-0.5">✓ elegido</span>}
+                                {!seleccionada && !sinCupo && <span className="text-[11px] mt-0.5">{celda.libres} libres</span>}
+                                {sinCupo && <span className="text-[11px] mt-0.5">sin cupo</span>}
                             </button>
                         );
                     })}
@@ -484,9 +489,9 @@ const PasoCalendario = ({ medico, fechaSel, onFecha, onAtras, onContinuar }: {
             )}
 
             <div className="flex gap-4 mt-4 text-[11px] text-mute">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-sky-soft inline-block" /> Disponible</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 inline-block" /> Sin cupo</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-sky-main inline-block" /> Seleccionado</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-sky-soft inline-block" /> Disponible («N libres»)</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 inline-block" /> Sin cupo (tachado)</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-sky-main inline-block" /> Seleccionado (✓ y borde)</span>
             </div>
 
             <div className="flex gap-3 mt-8">
@@ -561,11 +566,12 @@ const PasoHorario = ({
                         const ocupado = !h.disponible;
                         return (
                             <button key={h.hora} onClick={() => !ocupado && onSeleccionarHora(h)} disabled={ocupado}
+                                aria-pressed={activo}
                                 className={`p-3 rounded-lg border-2 text-sm font-bold transition-all
-                                    ${activo ? 'border-sky-main bg-sky-main text-white shadow-cta' : ''}
+                                    ${activo ? 'border-blue-deep bg-sky-main text-white shadow-cta ring-2 ring-offset-2 ring-blue-deep' : ''}
                                     ${!activo && !ocupado ? 'border-gray-200 text-ink-soft hover:border-sky-main hover:bg-sky-soft' : ''}
                                     ${ocupado ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed line-through' : ''}`}>
-                                {formatearHora(h.hora)}
+                                {activo && <span aria-hidden="true">✓ </span>}{formatearHora(h.hora)}
                             </button>
                         );
                     })}

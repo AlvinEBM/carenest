@@ -109,9 +109,9 @@ export const ReprogramarCita = ({ cita, onCerrar, onReprogramada }: Props) => {
                                             aria-pressed={hora === h.hora}
                                             onClick={() => setHora(h.hora)}
                                             className={`px-2 py-2 rounded-lg border text-sm font-semibold transition
-                                                ${hora === h.hora ? 'bg-sky-main border-sky-main text-white' : 'bg-white border-gray-200 text-ink-soft hover:border-sky-main'}`}
+                                                ${hora === h.hora ? 'bg-sky-main border-blue-deep text-white ring-2 ring-offset-2 ring-blue-deep' : 'bg-white border-gray-200 text-ink-soft hover:border-sky-main'}`}
                                         >
-                                            {formatearHora(h.hora)}
+                                            {hora === h.hora && <span aria-hidden="true">✓ </span>}{formatearHora(h.hora)}
                                         </button>
                                     ))}
                                 </div>
